@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infográfico: Rota 225kg - Plano de Supino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        }
+        .tab-button.active {
+            border-bottom-color: #ff4757;
+            color: #ff4757;
+            font-weight: 700;
+        }
+        .share-option-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            font-weight: 600; /* font-semibold */
+            color: #475569; /* slate-600 */
+            transition: all 0.2s;
+        }
+        .share-option-button:hover {
+            background-color: #f1f5f9; /* slate-100 */
+            border-color: #cbd5e1; /* slate-300 */
+            color: #1e293b; /* slate-800 */
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: #ffffff;
+            }
+            .bg-white {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+            .container {
+                padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important;
+            }
+            .tab-pane {
+                display: block !important;
+            }
+            .print-break-after {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#f0f4f8]">
+    
+    <!-- Palette Name: Energetic & Playful -->
+    <!-- Plan Narrative: 1. The Goal (Hook), 2. The Strategy (Flow), 3. The Progression (Line Chart), 4. Lockout Focus (Bar Chart), 5. Peaking (Donut Chart), 6. Game Day (List), 7. Keys to Success (Icons). -->
+    <!-- Visualization Choices:
+        - Goal (225kg): Inform -> Single Big Number -> High Impact (HTML/CSS). Confirmed NO SVG.
+        - Strategy (2 Days/Week): Organize -> Flow Chart -> Clear Process (HTML/CSS). Confirmed NO SVG/Mermaid.
+        - Progression (Weight over weeks): Change -> Line Chart -> Shows trend & peak (Chart.js/Canvas). Confirmed NO SVG.
+        - Lockout (Board Press): Compare -> Bar Chart -> Compare accessory focus (Chart.js/Canvas). Confirmed NO SVG.
+        - Phases (Buildup/Deload): Compare -> Donut Chart -> Show program composition (Chart.js/Canvas). Confirmed NO SVG.
+        - Test Day Plan: Organize -> Ordered List -> Step-by-step clarity (HTML/CSS). Confirmed NO SVG.
+        - Key Factors: Organize -> Icon List -> Quick summary (HTML/Unicode). Confirmed NO SVG.
+    -->
+    <!-- Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. -->
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12 no-print">
+            <h1 class="text-4xl md:text-6xl font-black text-[#1e293b] text-shadow">ROTA <span id="mainTarget" class="text-[#ff4757]">225</span>KG</h1>
+            <p class="text-lg md:text-xl text-slate-600 mt-2">O Plano de 5 Semanas de Tadeu para o Recorde no Supino</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 flex flex-col md:flex-row items-center justify-around text-center no-print">
+                <div class="md:w-1/2 mb-6 md:mb-0">
+                    <h2 class="text-2xl font-bold text-[#1e293b] mb-2">O Objetivo Final</h2>
+                    <p class="text-slate-600 mb-4">Atingir uma nova marca pessoal no supino até 13 de Novembro. Todo o treinamento é focado neste único levantamento.</p>
+                </div>
+                <div class="md:w-1/2 bg-slate-50 p-4 rounded-lg border">
+                    <h3 class="font-bold text-lg text-slate-700 mb-4">Calculadora do Plano</h3>
+                    <div class="space-y-3 text-left">
+                         <div>
+                            <label for="targetWeightInput" class="block text-sm font-medium text-slate-600">Objetivo Final (kg)</label>
+                            <input type="number" id="targetWeightInput" value="225" class="mt-1 block w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-[#ff4757] focus:border-[#ff4757]">
+                        </div>
+                        <div>
+                            <label for="current1RMInput" class="block text-sm font-medium text-slate-600">1RM Atual (kg)</label>
+                            <input type="number" id="current1RMInput" value="200" class="mt-1 block w-full p-2 border border-slate-300 rounded-md shadow-sm focus:ring-[#ff4757] focus:border-[#ff4757]">
+                        </div>
+                    </div>
+                    <div class="mt-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                        <button id="updatePlanButton" class="w-full bg-[#ff4757] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#d63031] transition-colors">Atualizar Plano</button>
+                        <button id="shareButton" class="w-full bg-slate-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-slate-700 transition-colors">Compartilhar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 print-break-after">
+                <h2 class="text-2xl font-bold text-center text-[#1e293b] mb-6">A Estratégia Semanal</h2>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center w-full md:w-1/3">
+                        <h3 class="font-bold text-lg text-[#1e90ff]">Dia 1: Força Bruta</h3>
+                        <p class="text-slate-600">Foco em progressão de carga no supino reto. Cargas altas e baixo volume para construir a base da força máxima.</p>
+                    </div>
+                    <div class="text-4xl font-bold text-slate-400 transform md:rotate-0 rotate-90">&rarr;</div>
+                    <div class="border-2 border-solid border-[#ff4757] rounded-lg p-4 text-center w-full md:w-1/3 shadow-inner">
+                        <h3 class="font-bold text-lg text-[#ff4757]">Dia 2: Poder de Finalização</h3>
+                        <p class="text-slate-600">Trabalho com Board Press e exercícios acessórios para fortalecer o tríceps e garantir um lockout explosivo.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center text-[#1e293b] mb-4">Plano de Treino Prescrito da Semana</h2>
+                <div class="border-b border-slate-200 no-print">
+                    <nav class="-mb-px flex space-x-2 md:space-x-6" id="tab-buttons">
+                        <button class="tab-button py-2 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 text-center" data-tab="1">
+                            <span class="font-semibold">Semana 1</span>
+                            <small class="block text-xs font-normal">13/10 - 19/10</small>
+                        </button>
+                        <button class="tab-button py-2 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 text-center" data-tab="2">
+                            <span class="font-semibold">Semana 2</span>
+                            <small class="block text-xs font-normal">20/10 - 26/10</small>
+                        </button>
+                        <button class="tab-button py-2 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 text-center" data-tab="3">
+                            <span class="font-semibold">Semana 3</span>
+                            <small class="block text-xs font-normal">27/10 - 02/11</small>
+                        </button>
+                        <button class="tab-button py-2 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 text-center" data-tab="4">
+                            <span class="font-semibold text-orange-500">Semana 4 (Deload)</span>
+                            <small class="block text-xs font-normal">03/11 - 09/11</small>
+                        </button>
+                    </nav>
+                </div>
+                <div id="tab-content" class="pt-6">
+                    <!-- Content will be generated by JS -->
+                </div>
+            </div>
+
+            <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center text-[#1e293b] mb-2">A Escalada da Intensidade</h2>
+                <p class="text-center text-slate-600 mb-4">Visualização da carga máxima de trabalho no supino principal a cada semana, mostrando o pico na Semana 3 antes do deload estratégico.</p>
+                <div class="chart-container">
+                    <canvas id="progressionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center text-[#1e293b] mb-2">Arma Secreta: Foco no Lockout</h2>
+                <p class="text-center text-slate-600 mb-4">O Board Press é crucial para sobrecarregar a porção final do movimento. A variação no número de tábuas ajusta o foco da sobrecarga.</p>
+                <div class="chart-container h-64 md:h-auto">
+                    <canvas id="boardPressChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center text-[#1e293b] mb-2">Fases do Plano de Ataque</h2>
+                <p class="text-center text-slate-600 mb-4">A maior parte do tempo é dedicada à construção de força, seguida por uma fase crucial de recuperação para supercompensação.</p>
+                 <div class="chart-container h-64 md:h-auto">
+                    <canvas id="phaseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center text-[#1e293b] mb-2">Plano para o Dia da Competição</h2>
+                <p class="text-center text-slate-600 mb-6 font-semibold">13 de Novembro</p>
+                <div class="flex justify-center">
+                    <ol class="relative border-l-2 border-dashed border-[#ff4757] space-y-8">
+                        
+                    </ol>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 bg-[#1e293b] text-white rounded-lg shadow-lg p-6">
+                 <h2 class="text-2xl font-bold text-center text-white mb-6">Fatores Críticos de Sucesso</h2>
+                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <span class="text-4xl">💪</span>
+                        <h3 class="font-bold mt-2">Aquecimento</h3>
+                        <p class="text-sm text-slate-300">Mobilidade e ativação são inegociáveis.</p>
+                    </div>
+                    <div>
+                        <span class="text-4xl">🍎</span>
+                        <h3 class="font-bold mt-2">Nutrição</h3>
+                        <p class="text-sm text-slate-300">Combustível para performance e recuperação.</p>
+                    </div>
+                    <div>
+                        <span class="text-4xl">😴</span>
+                        <h3 class="font-bold mt-2">Descanso</h3>
+                        <p class="text-sm text-slate-300">É no descanso que o corpo se fortalece.</p>
+                    </div>
+                    <div>
+                        <span class="text-4xl">🧠</span>
+                        <h3 class="font-bold mt-2">Confiança</h3>
+                        <p class="text-sm text-slate-300">Confie no plano e visualize o sucesso.</p>
+                    </div>
+                 </div>
+            </div>
+
+        </main>
+        
+        <footer class="text-center mt-12 text-slate-500 no-print">
+            <p>&copy; 2025 Plano de Treino Personalizado. Força, Tadeu!</p>
+        </footer>
+
+    </div>
+    
+    <div id="shareModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
+            <button id="closeModalButton" class="absolute top-2 right-2 text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
+            <h3 class="text-xl font-bold text-center text-slate-800 mb-6">Opções para Compartilhar</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <button id="copyLinkButton" class="share-option-button">🔗 Copiar Link</button>
+                <a id="whatsappButton" href="#" target="_blank" class="share-option-button">🟢 WhatsApp</a>
+                <a id="telegramButton" href="#" target="_blank" class="share-option-button">🔵 Telegram</a>
+                <a id="twitterButton" href="#" target="_blank" class="share-option-button">🐦 X (Twitter)</a>
+                <a id="emailButton" href="#" class="share-option-button">📧 E-mail</a>
+                <button id="printButton" class="share-option-button">🖨️ Imprimir</button>
+            </div>
+            <div id="modalShareNotification" class="text-sm text-green-700 font-semibold mt-4 h-4 text-center"></div>
+        </div>
+    </div>
+
+
+    <script>
+        let progressionChartInstance = null;
+
+        const tooltipTitleCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        const roundToNearest2point5 = (num) => Math.round(num / 2.5) * 2.5;
+
+        function updatePlan() {
+            const targetWeight = parseFloat(document.getElementById('targetWeightInput').value) || 225;
+            const current1RM = parseFloat(document.getElementById('current1RMInput').value) || 200;
+
+            document.getElementById('mainTarget').innerText = targetWeight;
+            
+            const tabContent = document.getElementById('tab-content');
+            tabContent.innerHTML = '';
+
+            // Week 1
+            const w1_d1_bench = roundToNearest2point5(current1RM * 0.825);
+            const w1_d1_close_grip = roundToNearest2point5(current1RM * 0.65);
+            const w1_d2_bench_single = roundToNearest2point5(current1RM * 0.85);
+            const w1_d2_board_high = roundToNearest2point5(current1RM * 0.95);
+            const w1_d2_board_mid = roundToNearest2point5(current1RM * 0.875);
+
+            // Week 2
+            const w2_d1_bench = roundToNearest2point5(current1RM * 0.85);
+            const w2_d1_close_grip = roundToNearest2point5(current1RM * 0.70);
+            const w2_d2_bench_single = roundToNearest2point5(current1RM * 0.90);
+            const w2_d2_board_high = roundToNearest2point5(current1RM * 1.0);
+            const w2_d2_board_mid = roundToNearest2point5(current1RM * 0.925);
+            
+            // Week 3
+            const w3_d1_bench = roundToNearest2point5(current1RM * 0.875);
+            const w3_d1_close_grip = roundToNearest2point5(current1RM * 0.75);
+            const w3_d2_bench_single = roundToNearest2point5(current1RM * 0.95);
+            const w3_d2_board_low = roundToNearest2point5(current1RM * 1.025);
+            const w3_d2_board_mid = roundToNearest2point5(current1RM * 0.975);
+            
+            // Week 4
+            const w4_d1_bench = roundToNearest2point5(current1RM * 0.70);
+            const w4_d2_bench_speed = roundToNearest2point5(current1RM * 0.75);
+
+
+            const weeksData = [
+                {
+                    day1: `<p><strong>Bench Press:</strong> 3x5 @ ${w1_d1_bench}kg</p><p><strong>Close Grip Board (4cm):</strong> 2x8-10 @ ${w1_d1_close_grip}kg</p><p><strong>OHP (Desenvolvimento):</strong> 3x3-5</p><p><strong>Tríceps Paralela:</strong> 4x Máx (Peso Corporal)</p>`,
+                    day2: `<p><strong>Bench Press (Sem Board):</strong> 1x1 @ ${w1_d2_bench_single}kg</p><p><strong>Bench Press (Board Alto):</strong> 1x2 @ ${w1_d2_board_high}kg</p><p><strong>Bench Press (Board Médio):</strong> 2x3 @ ${w1_d2_board_mid}kg</p><p><strong>Supino Inclinado Halteres:</strong> 3x12</p><p><strong>Crucifixo Inverso:</strong> 3x12</p><p><strong>Tríceps Testa (Barra W):</strong> 4x12</p>`
+                },
+                {
+                    day1: `<p><strong>Bench Press:</strong> 3x4 @ ${w2_d1_bench}kg</p><p><strong>Close Grip Board (4cm):</strong> 2x6-8 @ ${w2_d1_close_grip}kg</p><p><strong>OHP (Desenvolvimento):</strong> 3x3</p><p><strong>Tríceps Paralela:</strong> 4x Máx (Com peso)</p>`,
+                    day2: `<p><strong>Bench Press (Sem Board):</strong> 1x1 @ ${w2_d2_bench_single}kg</p><p><strong>Bench Press (Board Alto):</strong> 1x1 @ ${w2_d2_board_high}kg</p><p><strong>Bench Press (Board Médio):</strong> 2x2 @ ${w2_d2_board_mid}kg</p><p><strong>Supino Inclinado Halteres:</strong> 3x10</p><p><strong>Remada Curvada:</strong> 3x10</p><p><strong>Tríceps Corda:</strong> 4x10</p>`
+                },
+                {
+                    day1: `<p><strong>Bench Press:</strong> 3x3 @ ${w3_d1_bench}kg</p><p><strong>Close Grip Board (2cm):</strong> 2x5 @ ${w3_d1_close_grip}kg</p><p><strong>Push Press:</strong> 3x3</p><p><strong>Tríceps Testa Halter:</strong> 3x10</p>`,
+                    day2: `<p><strong>Bench Press (Sem Board):</strong> 1x1 @ ${w3_d2_bench_single}kg</p><p><strong>Bench Press (Board Baixo):</strong> 1x1 @ ${w3_d2_board_low}kg</p><p><strong>Bench Press (Board Médio):</strong> 1x1 @ ${w3_d2_board_mid}kg</p><p><strong>Elevação Lateral:</strong> 4x15</p><p><strong>Face Pull:</strong> 4x15</p>`
+                },
+                {
+                    day1: `<p><strong>Bench Press:</strong> 3x5 @ ${w4_d1_bench}kg</p><p><strong>OHP (Desenvolvimento):</strong> 3x5 (Leve)</p><p><strong>Puxada Alta:</strong> 3x12</p><p><strong>Tríceps Corda:</strong> 3x15</p>`,
+                    day2: `<p><strong>Bench Press (Velocidade):</strong> 5x1 @ ${w4_d2_bench_speed}kg</p><p><strong>Supino Inclinado Halteres:</strong> 3x15 (Leve)</p><p><strong>Remada Halter:</strong> 3x15</p><p><strong>Tríceps Francês:</strong> 3x15</p>`
+                }
+            ];
+
+            const weekTitles = [
+                { title: "Semana 1", dates: "13/10 - 19/10" },
+                { title: "Semana 2", dates: "20/10 - 26/10" },
+                { title: "Semana 3", dates: "27/10 - 02/11" },
+                { title: "Semana 4 (Deload)", dates: "03/11 - 09/11" }
+            ];
+
+            weeksData.forEach((week, index) => {
+                const weekNum = index + 1;
+                const hiddenClass = weekNum === 1 ? '' : 'hidden';
+                const weekInfo = weekTitles[index];
+                const printMarginClass = index > 0 ? 'print:mt-8' : '';
+
+                const weekHTML = `
+                    <div id="week-${weekNum}-content" class="tab-pane ${hiddenClass} ${printMarginClass}">
+                        <div class="hidden print:block mb-4">
+                             <h3 class="text-xl font-bold text-slate-800">${weekInfo.title}</h3>
+                             <p class="text-sm text-slate-500">${weekInfo.dates}</p>
+                             <hr class="my-2">
+                        </div>
+                        <div class="flex justify-end mb-2 no-print">
+                            <button onclick="exportWeekToTxt(${weekNum})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-1 px-3 rounded-lg text-sm flex items-center gap-2">
+                                🗒️ 
+                                <span>Exportar para .txt</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h3 class="font-bold text-lg text-[#1e90ff] mb-3">Dia 1</h3>
+                                <div id="week-${weekNum}-day-1-content" class="space-y-2 text-slate-700 p-3 bg-white rounded-md min-h-[240px]">${week.day1}</div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h3 class="font-bold text-lg text-[#ff4757] mb-3">Dia 2</h3>
+                                <div id="week-${weekNum}-day-2-content" class="space-y-2 text-slate-700 p-3 bg-white rounded-md min-h-[240px]">${week.day2}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                tabContent.innerHTML += weekHTML;
+            });
+            
+            const week1_max = w1_d2_bench_single;
+            const week2_max = w2_d2_bench_single;
+            const week3_peak = w3_d2_bench_single;
+            const week4_deload = w4_d2_bench_speed;
+
+            if (progressionChartInstance) {
+                progressionChartInstance.data.datasets[0].data = [week1_max, week2_max, week3_peak, week4_deload];
+                progressionChartInstance.update();
+            }
+
+            const competitionDayEl = document.querySelector('.relative.border-l-2');
+            const targetOpen = roundToNearest2point5(targetWeight * 0.91);
+            const targetSecond = roundToNearest2point5(targetWeight * 0.95);
+            
+            competitionDayEl.innerHTML = `
+                <li class="ml-6">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-blue-200 rounded-full -left-4 ring-4 ring-white"><span class="font-bold text-blue-800">1</span></span>
+                    <h3 class="font-semibold text-lg text-[#1e293b]">Abertura: ~${targetOpen} kg</h3>
+                    <p class="text-slate-600">Um peso seguro e confiante para entrar no jogo.</p>
+                </li>
+                <li class="ml-6">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-orange-200 rounded-full -left-4 ring-4 ring-white"><span class="font-bold text-orange-800">2</span></span>
+                    <h3 class="font-semibold text-lg text-[#1e293b]">Segunda Tentativa: ~${targetSecond} kg</h3>
+                    <p class="text-slate-600">Garantir um novo recorde pessoal.</p>
+                </li>
+                <li class="ml-6">
+                    <span class="absolute flex items-center justify-center w-8 h-8 bg-red-200 rounded-full -left-4 ring-4 ring-white"><span class="font-bold text-red-800">3</span></span>
+                    <h3 class="font-semibold text-lg text-[#ff4757]">A Glória: ${targetWeight} kg</h3>
+                    <p class="text-slate-600">A tentativa final. O culminar de 5 semanas de trabalho duro.</p>
+                </li>
+            `;
+
+            setupTabs();
+        }
+
+        function setupTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabNumber = button.getAttribute('data-tab');
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabPanes.forEach(pane => {
+                        if (pane.id === `week-${tabNumber}-content`) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            document.querySelector('.tab-button[data-tab="1"]').classList.add('active');
+            if (document.getElementById('week-1-content')) {
+                document.getElementById('week-1-content').classList.remove('hidden');
+            }
+        }
+
+        function exportWeekToTxt(weekNum) {
+            const day1HTML = document.getElementById(`week-${weekNum}-day-1-content`).innerHTML;
+            const day2HTML = document.getElementById(`week-${weekNum}-day-2-content`).innerHTML;
+
+            const convertHtmlToText = (html) => {
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '\n');
+                return (tempDiv.textContent || tempDiv.innerText || '').trim();
+            };
+
+            let textContent = `Plano de Treino - Semana ${weekNum}\n`;
+            textContent += '========================\n\n';
+            textContent += 'Dia 1:\n';
+            textContent += '-----------------------\n';
+            textContent += convertHtmlToText(day1HTML) + '\n\n';
+            textContent += 'Dia 2:\n';
+            textContent += '-----------------------\n';
+            textContent += convertHtmlToText(day2HTML) + '\n';
+
+            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Plano_Treino_Semana_${weekNum}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+        
+        function openShareModal() {
+            const shareText = encodeURIComponent("Confira meu plano de treino para o supino!");
+            const url = getShareURL();
+
+            document.getElementById('whatsappButton').href = `https://api.whatsapp.com/send?text=${shareText}%20${encodeURIComponent(url)}`;
+            document.getElementById('telegramButton').href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${shareText}`;
+            document.getElementById('twitterButton').href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${shareText}`;
+            document.getElementById('emailButton').href = `mailto:?subject=${shareText}&body=Dê uma olhada no meu plano de treino:%20${encodeURIComponent(url)}`;
+            
+            document.getElementById('shareModal').classList.remove('hidden');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.add('hidden');
+        }
+        
+        function getShareURL() {
+            const targetWeight = document.getElementById('targetWeightInput').value;
+            const current1RM = document.getElementById('current1RMInput').value;
+            const url = new URL(window.location);
+            url.searchParams.set('target', targetWeight);
+            url.searchParams.set('rm', current1RM);
+            return url.href;
+        }
+
+        function copyLink() {
+            const linkToCopy = getShareURL();
+            const textArea = document.createElement('textarea');
+            textArea.value = linkToCopy;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            const notificationEl = document.getElementById('modalShareNotification');
+            try {
+                document.execCommand('copy');
+                notificationEl.textContent = 'Link copiado!';
+            } catch (err) {
+                console.error('Falha ao copiar o link: ', err);
+                notificationEl.textContent = 'Falha ao copiar.';
+            } finally {
+                document.body.removeChild(textArea);
+            }
+
+            setTimeout(() => {
+                notificationEl.textContent = '';
+            }, 3000);
+        }
+
+        function loadPlanFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const targetWeight = params.get('target');
+            const current1RM = params.get('rm');
+
+            if (targetWeight) {
+                document.getElementById('targetWeightInput').value = targetWeight;
+            }
+            if (current1RM) {
+                document.getElementById('current1RMInput').value = current1RM;
+            }
+            
+            updatePlan();
+        }
+
+        function initProgressionChart() {
+            const ctx = document.getElementById('progressionChart').getContext('2d');
+            progressionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Semana 1', 'Semana 2', 'Semana 3 (Pico)', 'Semana 4 (Deload)'],
+                    datasets: [{
+                        label: 'Carga Máxima de Trabalho (kg)',
+                        data: [],
+                        borderColor: '#ff4757',
+                        backgroundColor: 'rgba(255, 71, 87, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ff4757',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Peso (kg)'
+                            }
+                        }
+                    },
+                    ...tooltipTitleCallback
+                }
+            });
+        }
+
+        function initBoardPressChart() {
+            const ctx = document.getElementById('boardPressChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Semana 1', 'Semana 2', 'Semana 3'],
+                    datasets: [{
+                        label: 'Número de Tábuas (Boards)',
+                        data: [2, 3, 1],
+                        backgroundColor: ['#1e90ff', '#ffa502', '#ff4757'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                             ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        ...tooltipTitleCallback.plugins
+                    }
+                }
+            });
+        }
+
+        function initPhaseChart() {
+             const ctx = document.getElementById('phaseChart').getContext('2d');
+             new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Construção & Pico', 'Recuperação (Deload)'],
+                    datasets: [{
+                        label: 'Distribuição do Foco',
+                        data: [3, 2],
+                        backgroundColor: [
+                            '#2ed573',
+                            '#ffa502'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...tooltipTitleCallback
+                }
+             });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initProgressionChart();
+            initBoardPressChart();
+            initPhaseChart();
+            
+            document.getElementById('updatePlanButton').addEventListener('click', updatePlan);
+            document.getElementById('shareButton').addEventListener('click', openShareModal);
+            document.getElementById('closeModalButton').addEventListener('click', closeShareModal);
+            document.getElementById('copyLinkButton').addEventListener('click', copyLink);
+            document.getElementById('printButton').addEventListener('click', () => window.print());
+
+            loadPlanFromURL();
+        });
+    </script>
+</body>
+</html>
+
